@@ -1,0 +1,205 @@
+{
+    "title": "Quiz para Letícia (amigos) - Múltipla Escolha",
+    "instructions": "Escolha a alternativa que você acha que corresponde ao gosto da Letícia.",
+    "questions": [
+        {
+            "id": "q1",
+            "question": "Qual é a princesa da Disney que ela prefere?",
+            "options": [
+                "Merida",
+                "Mulan",
+                "Cinderela",
+                "Aurora"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q2",
+            "question": "Qual é a cor favorita dela?",
+            "options": [
+                "Marsala",
+                "Vermelho",
+                "Rosa",
+                "Azul"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q3",
+            "question": "Qual é a bebida favorita dela?",
+            "options": [
+                "Suco de goiaba",
+                "Refrigerante",
+                "Chá",
+                "Água"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q4",
+            "question": "Qual é o fast food favorito dela?",
+            "options": [
+                "Pizza",
+                "Hambúrguer",
+                "Sushi",
+                "KFC"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q5",
+            "question": "Qual é a estação do ano favorita dela?",
+            "options": [
+                "Inverno",
+                "Primavera",
+                "Verão",
+                "Outono"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q6",
+            "question": "Qual é o animal favorito dela?",
+            "options": [
+                "Não consegue escolher",
+                "Cachorro",
+                "Gato",
+                "Pássaro"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q7",
+            "question": "Qual é o filme favorito da Barbie para ela?",
+            "options": [
+                "A Princesa e a Pop Star",
+                "Barbie em Vida de Sereia",
+                "Barbie e o Castelo",
+                "Barbie Moderna"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q8",
+            "question": "Como ela prefere o café?",
+            "options": [
+                "Não gosta de café",
+                "Puro",
+                "Com leite",
+                "Com açúcar"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q9",
+            "question": "Qual universo ela prefere?",
+            "options": [
+                "Não sabe/diz não",
+                "Marvel",
+                "Senhor dos Anéis",
+                "Harry Potter"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q10",
+            "question": "Quem é o artista masculino preferido dela?",
+            "options": [
+                "The Rock",
+                "Drake",
+                "Ed Sheeran",
+                "Shawn Mendes"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q11",
+            "question": "Quem é a artista feminina preferida dela?",
+            "options": [
+                "Angelina Jolie",
+                "Ariana Grande",
+                "Billie Eilish",
+                "Taylor Swift"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q12",
+            "question": "Qual personagem ela mencionou como favorito?",
+            "options": [
+                "Temaki (Boku no Hero)",
+                "Naruto",
+                "Luffy",
+                "Deku"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q13",
+            "question": "Qual é a série favorita dela?",
+            "options": [
+                "All of Us Are Dead",
+                "Stranger Things",
+                "The Crown",
+                "La Casa de Papel"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q14",
+            "question": "Qual é a viagem dos sonhos dela?",
+            "options": [
+                "Gramado",
+                "Paris",
+                "Tóquio",
+                "Nova York"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q15",
+            "question": "Qual é o nome completo dela?",
+            "options": [
+                "Letícia Viega Flora",
+                "Letícia Silva",
+                "Letícia Souza",
+                "Letícia Oliveira"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q16",
+            "question": "Qual apelido ela prefere?",
+            "options": [
+                "Largatixa",
+                "Leti",
+                "Lê",
+                "Tícia"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q17",
+            "question": "Qual hobbie ela gostaria de começar?",
+            "options": [
+                "Tocar bateria",
+                "Pintura",
+                "Fotografia",
+                "Culinária"
+            ],
+            "answer": 0
+        },
+        {
+            "id": "q18",
+            "question": "Qual é a comida favorita dela?",
+            "options": [
+                "Estrogonofe",
+                "Lasanha",
+                "Sushi",
+                "Churrasco"
+            ],
+            "answer": 0
+        }
+    ],
+    "notes": "As respostas corretas foram marcadas de acordo com as mensagens fornecidas. Se quiser alterar alguma, diga o id da questão e a nova alternativa correta (por exemplo q1 -> 1)."
+}

@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Quiz — Letícia (amigos)</title>
+    <style>
+        :root {
+            --bg-1: #fff6fb;
+            --bg-2: #f7f0ff;
+            --accent: #d63384;
+            /* pink accent */
+            --accent-dark: #9e1f60;
+            --muted: #6b6b74;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+            color: #0b1a2b;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(166, 69, 130, 0.08);
+            max-width: 920px;
+            margin: 22px auto;
+            border: 1px solid rgba(214, 51, 132, 0.06);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            color: var(--accent-dark);
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            font-size: 1.6rem;
+        }
+
+        p.hint {
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .question {
+            margin-top: 16px;
+        }
+
+        .options {
+            margin-top: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(156, 28, 85, 0.08);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 250, 253, 0.6));
+            transition: transform .08s ease, box-shadow .12s ease, background .12s ease;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(156, 28, 85, 0.06);
+        }
+
+        .option input[type="radio"] {
+            transform: scale(1.05);
+        }
+
+        .option input[type="radio"]:focus {
+            outline: 2px solid rgba(214, 51, 132, 0.18);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            align-items: center;
+        }
+
+        button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(156, 28, 85, 0.12);
+            transition: transform .08s ease, opacity .12s ease, background .12s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button.secondary {
+            background: #8a6b7a;
+        }
+
+        button[disabled],
+        button.disabled {
+            background: #e0dfe5 !important;
+            color: #9a9aa0 !important;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.9;
+        }
+
+        .result {
+            margin-top: 14px;
+            padding: 14px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #fffafb, #fff7fb);
+            border: 1px solid rgba(214, 51, 132, 0.06);
+        }
+
+        .correct {
+            background: #e9fff5;
+            border: 1px solid #b8f0c6;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .incorrect {
+            background: #fff5f7;
+            border: 1px solid #f1c0c0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Quiz — Letícia (amigos)</h1>
+        <p class="hint">Escolha a alternativa que você acha que corresponde ao gosto da Letícia. Ao final você verá a
+            pontuação e as respostas corretas.</p>
+
+        <div id="quiz-root"></div>
+
+        <div class="controls" id="controls" style="display:none">
+            <button id="prev">Anterior</button>
+            <button id="next">Próxima</button>
+            <button id="submit" style="margin-left:auto">Enviar</button>
+        </div>
+
+        <div id="result-area"></div>
+    </div>
+
+    <script>
+        // Perguntas embutidas (garante que o quiz funcione ao abrir pelo sistema de arquivos)
+        const DATA = {
+            "title": "Quiz para Letícia (amigos)",
+            "instructions": "Escolha a alternativa que você acha que corresponde ao gosto da Letícia.",
+            "questions": [
+                { "id": "q1", "question": "Qual é a princesa da Disney que ela prefere?", "options": ["Merida", "Mulan", "Cinderela", "Aurora"], "answer": 0 },
+                { "id": "q2", "question": "Qual é a cor favorita dela?", "options": ["Marsala", "Vermelho", "Rosa", "Azul"], "answer": 0 },
+                { "id": "q3", "question": "Qual é a bebida favorita dela?", "options": ["Suco de goiaba", "Refrigerante", "Chá", "Água"], "answer": 0 },
+                { "id": "q4", "question": "Qual é o fast food favorito dela?", "options": ["Pizza", "Hambúrguer", "Sushi", "KFC"], "answer": 0 },
+                { "id": "q5", "question": "Qual é a estação do ano favorita dela?", "options": ["Inverno", "Primavera", "Verão", "Outono"], "answer": 0 },
+                { "id": "q6", "question": "Qual é o animal favorito dela?", "options": ["Não consegue escolher", "Cachorro", "Gato", "Pássaro"], "answer": 0 },
+                { "id": "q7", "question": "Qual é o filme favorito da Barbie para ela?", "options": ["A Princesa e a Pop Star", "Barbie em Vida de Sereia", "Barbie e o Castelo", "Barbie Moderna"], "answer": 0 },
+                { "id": "q8", "question": "Como ela prefere o café?", "options": ["Não gosta de café", "Puro", "Com leite", "Com açúcar"], "answer": 0 },
+                { "id": "q9", "question": "Qual universo ela prefere?", "options": ["Não sabe/diz não", "Marvel", "Senhor dos Anéis", "Harry Potter"], "answer": 0 },
+                { "id": "q10", "question": "Quem é o artista masculino preferido dela?", "options": ["The Rock", "Drake", "Ed Sheeran", "Shawn Mendes"], "answer": 0 },
+                { "id": "q11", "question": "Quem é a artista feminina preferida dela?", "options": ["Angelina Jolie", "Ariana Grande", "Billie Eilish", "Taylor Swift"], "answer": 0 },
+                { "id": "q12", "question": "Qual personagem ela mencionou como favorito?", "options": ["Temaki (Boku no Hero)", "Naruto", "Luffy", "Deku"], "answer": 0 },
+                { "id": "q13", "question": "Qual é a série favorita dela?", "options": ["All of Us Are Dead", "Stranger Things", "The Crown", "La Casa de Papel"], "answer": 0 },
+                { "id": "q14", "question": "Qual é a viagem dos sonhos dela?", "options": ["Gramado", "Paris", "Tóquio", "Nova York"], "answer": 0 },
+                { "id": "q15", "question": "Qual é o nome completo dela?", "options": ["Letícia Viega Flora", "Letícia Silva", "Letícia Souza", "Letícia Oliveira"], "answer": 0 },
+                { "id": "q16", "question": "Qual apelido ela prefere?", "options": ["Largatixa", "Leti", "Lê", "Tícia"], "answer": 0 },
+                { "id": "q17", "question": "Qual hobbie ela gostaria de começar?", "options": ["Tocar bateria", "Pintura", "Fotografia", "Culinária"], "answer": 0 },
+                { "id": "q18", "question": "Qual é a comida favorita dela?", "options": ["Estrogonofe", "Lasanha", "Sushi", "Churrasco"], "answer": 0 }
+            ]
+        };
+
+        const root = document.getElementById('quiz-root');
+        const controls = document.getElementById('controls');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+        const submitBtn = document.getElementById('submit');
+        const resultArea = document.getElementById('result-area');
+
+        let idx = 0;
+        let answers = {};
+        let quizQuestions = []; // questions (possibly shuffled) used by the UI
+
+        // Fisher-Yates shuffle
+        function shuffleArray(a) {
+            const arr = a.slice();
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Embaralha alternativas de uma pergunta e reajusta o índice da resposta correta
+        function shuffleOptionsForQuestion(q) {
+            // q: { id, question, options: [], answer: index }
+            const items = q.options.map((text, idx) => ({ text, origIndex: idx }));
+            // shuffle items in place (Fisher-Yates)
+            for (let i = items.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [items[i], items[j]] = [items[j], items[i]];
+            }
+            // find new index of the original correct option
+            const newIndex = items.findIndex(item => item.origIndex === q.answer);
+            q.options = items.map(it => it.text);
+            q.answer = newIndex;
+        }
+
+        function initQuiz() {
+            root.innerHTML = '';
+            const title = document.createElement('h2'); title.textContent = DATA.title || 'Quiz'; root.appendChild(title);
+            if (DATA.instructions) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = DATA.instructions; root.appendChild(p); }
+            const qc = document.createElement('div'); qc.id = 'qcontainer'; root.appendChild(qc);
+            // cria uma cópia profunda das perguntas para não alterar DATA e embaralha a ordem
+            quizQuestions = shuffleArray(JSON.parse(JSON.stringify(DATA.questions)));
+            // embaralha alternativas em cada pergunta e reajusta o gabarito
+            quizQuestions.forEach(q => shuffleOptionsForQuestion(q));
+            answers = {}; // limpa respostas ao reiniciar
+            idx = 0;
+            controls.style.display = 'flex'; renderQuestion(0);
+        }
+
+        function renderQuestion(i) {
+            idx = i;
+            const q = quizQuestions[i];
+            const container = document.getElementById('qcontainer');
+            container.innerHTML = '';
+
+            const qdiv = document.createElement('div');
+            qdiv.className = 'question';
+            const qtitle = document.createElement('div');
+            qtitle.innerHTML = `<strong>Questão ${i + 1}:</strong> ${q.question}`;
+            qdiv.appendChild(qtitle);
+
+            const opts = document.createElement('div');
+            opts.className = 'options';
+
+            q.options.forEach((opt, j) => {
+                const o = document.createElement('label');
+                o.className = 'option';
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = q.id;
+                radio.value = j;
+                if (answers[q.id] === j) radio.checked = true;
+                radio.addEventListener('change', () => answers[q.id] = j);
+                o.appendChild(radio);
+                const span = document.createElement('span');
+                span.style.marginLeft = '8px';
+                span.textContent = opt;
+                o.appendChild(span);
+                opts.appendChild(o);
+            });
+
+            qdiv.appendChild(opts);
+            container.appendChild(qdiv);
+
+            // Atualiza estado dos botões (Anterior / Próxima)
+            const isFirst = i === 0;
+            const isLast = i === quizQuestions.length - 1;
+            prevBtn.disabled = isFirst;
+            if (isFirst) {
+                prevBtn.classList.add('disabled');
+            } else {
+                prevBtn.classList.remove('disabled');
+            }
+
+            nextBtn.disabled = isLast;
+            if (isLast) {
+                // deixa o botão Próxima cinza e inativo
+                nextBtn.classList.add('disabled');
+                nextBtn.setAttribute('aria-disabled', 'true');
+            } else {
+                nextBtn.classList.remove('disabled');
+                nextBtn.removeAttribute('aria-disabled');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        prevBtn.addEventListener('click', () => { if (idx > 0) renderQuestion(idx - 1); });
+        nextBtn.addEventListener('click', () => { if (idx < quizQuestions.length - 1) renderQuestion(idx + 1); });
+        submitBtn.addEventListener('click', onSubmit);
+
+        function onSubmit() {
+            const total = quizQuestions.length; let answered = 0; for (const q of quizQuestions) if (typeof answers[q.id] !== 'undefined') answered++; if (answered < total) { if (!confirm(`Você respondeu ${answered}/${total}. Deseja enviar mesmo assim?`)) return; }
+            let score = 0; const details = []; quizQuestions.forEach(q => { const sel = answers[q.id]; const ok = (typeof sel !== 'undefined') && (sel === q.answer); if (ok) score++; details.push({ id: q.id, question: q.question, selected: sel, selectedText: (sel != null ? q.options[sel] : null), correctIndex: q.answer, correctText: q.options[q.answer], ok }); });
+            resultArea.innerHTML = ''; const r = document.createElement('div'); r.className = 'result'; r.innerHTML = `<strong>Pontuação: ${score} / ${total}</strong>`; resultArea.appendChild(r);
+            details.forEach(d => { const el = document.createElement('div'); el.style.marginTop = '10px'; el.className = d.ok ? 'correct' : 'incorrect'; el.innerHTML = `<div><strong>${d.question}</strong></div><div>Sua resposta: ${d.selectedText ?? '<em>Sem resposta</em>'}</div><div>Resposta correta: <strong>${d.correctText}</strong></div>`; resultArea.appendChild(el); });
+            const dl = document.createElement('button'); dl.textContent = 'Baixar resultado (JSON)'; dl.style.marginTop = '12px'; dl.addEventListener('click', () => { const out = { submittedAt: new Date().toISOString(), score, total, details }; const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'resultado_quiz_leticia.json'; a.click(); URL.revokeObjectURL(url); }); resultArea.appendChild(dl);
+        }
+
+        // Inicializa
+        initQuiz();
+    </script>
+</body>
+
+</html>
