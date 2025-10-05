@@ -138,6 +138,76 @@
             padding: 10px;
             border-radius: 8px;
         }
+
+        /* Mobile / small screens */
+        @media (max-width: 600px) {
+            :root {
+                --card-radius: 12px;
+            }
+
+            body {
+                margin: 12px;
+            }
+
+            .card {
+                margin: 12px;
+                padding: 16px;
+                border-radius: 12px;
+                max-width: calc(100% - 24px);
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .option {
+                padding: 12px 10px;
+                gap: 12px;
+                font-size: 15px;
+                flex-wrap: wrap;
+            }
+
+            .option span {
+                display: block;
+            }
+
+            .option input[type="radio"] {
+                margin-left: 2px;
+                margin-top: 4px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .controls button {
+                width: 100%;
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            #submit {
+                margin-left: 0 !important;
+            }
+
+            .question {
+                margin-top: 12px;
+            }
+
+            p.hint {
+                font-size: 14px;
+            }
+
+            .result {
+                padding: 12px;
+            }
+
+            .option:hover {
+                transform: none;
+                box-shadow: none;
+            }
+        }
     </style>
 </head>
 
@@ -221,6 +291,87 @@
             q.answer = newIndex;
         }
 
+        // --- Helpers para gerar imagem do resultado ---
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line, x, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, y);
+            return y + lineHeight;
+        }
+
+        function generateResultImageBlob(out, cb) {
+            // out: { submittedAt, score, total, details }
+            const width = Math.min(1000, Math.max(360, Math.floor(window.innerWidth * 0.9)));
+            // estimate height
+            const baseLine = 30;
+            let estLines = 4; // title, score, gap
+            out.details.forEach(d => { estLines += 3; });
+            const height = Math.min(12000, 120 + estLines * 28);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width * devicePixelRatio;
+            canvas.height = height * devicePixelRatio;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            const ctx = canvas.getContext('2d');
+            ctx.scale(devicePixelRatio, devicePixelRatio);
+
+            // background
+            ctx.fillStyle = '#fffafc';
+            ctx.fillRect(0, 0, width, height);
+            // border
+            ctx.strokeStyle = 'rgba(214,51,132,0.12)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(8, 8, width - 16, height - 16);
+
+            // title
+            ctx.fillStyle = '#9e1f60';
+            ctx.font = '700 20px system-ui, -apple-system, Roboto, "Segoe UI", Arial';
+            ctx.fillText('Resultado do Quiz — Letícia', 24, 44);
+
+            // score
+            ctx.fillStyle = '#333';
+            ctx.font = '600 16px system-ui, Roboto, "Segoe UI", Arial';
+            ctx.fillText(`Pontuação: ${out.score} / ${out.total}`, 24, 75);
+            ctx.font = '14px system-ui, Roboto, "Segoe UI", Arial';
+            ctx.fillStyle = '#555';
+            ctx.fillText(`Enviado em: ${new Date(out.submittedAt).toLocaleString()}`, 24, 98);
+
+            // details
+            let y = 120;
+            const padding = 24;
+            const maxTextWidth = width - padding * 2;
+            out.details.forEach((d, idx) => {
+                // question
+                ctx.fillStyle = d.ok ? '#0b7a50' : '#7a1f2b';
+                ctx.font = '600 14px system-ui, Roboto, "Segoe UI", Arial';
+                y = wrapText(ctx, `${idx + 1}. ${d.question}`, padding, y, maxTextWidth, 20);
+                // your answer
+                ctx.fillStyle = '#333';
+                ctx.font = '14px system-ui, Roboto, "Segoe UI", Arial';
+                y = wrapText(ctx, `Sua resposta: ${d.selectedText ?? 'Sem resposta'}`, padding + 6, y, maxTextWidth - 6, 18);
+                // correct
+                ctx.fillStyle = '#111';
+                ctx.font = '14px system-ui, Roboto, "Segoe UI", Arial';
+                y = wrapText(ctx, `Resposta correta: ${d.correctText}`, padding + 6, y, maxTextWidth - 6, 18);
+                y += 8; // gap
+            });
+
+            canvas.toBlob(cb, 'image/png');
+        }
+
         function initQuiz() {
             root.innerHTML = '';
             const title = document.createElement('h2'); title.textContent = DATA.title || 'Quiz'; root.appendChild(title);
@@ -302,7 +453,16 @@
             let score = 0; const details = []; quizQuestions.forEach(q => { const sel = answers[q.id]; const ok = (typeof sel !== 'undefined') && (sel === q.answer); if (ok) score++; details.push({ id: q.id, question: q.question, selected: sel, selectedText: (sel != null ? q.options[sel] : null), correctIndex: q.answer, correctText: q.options[q.answer], ok }); });
             resultArea.innerHTML = ''; const r = document.createElement('div'); r.className = 'result'; r.innerHTML = `<strong>Pontuação: ${score} / ${total}</strong>`; resultArea.appendChild(r);
             details.forEach(d => { const el = document.createElement('div'); el.style.marginTop = '10px'; el.className = d.ok ? 'correct' : 'incorrect'; el.innerHTML = `<div><strong>${d.question}</strong></div><div>Sua resposta: ${d.selectedText ?? '<em>Sem resposta</em>'}</div><div>Resposta correta: <strong>${d.correctText}</strong></div>`; resultArea.appendChild(el); });
-            const dl = document.createElement('button'); dl.textContent = 'Baixar resultado (JSON)'; dl.style.marginTop = '12px'; dl.addEventListener('click', () => { const out = { submittedAt: new Date().toISOString(), score, total, details }; const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'resultado_quiz_leticia.json'; a.click(); URL.revokeObjectURL(url); }); resultArea.appendChild(dl);
+            // guarda o resultado para permitir download como PNG também
+            const lastResult = { submittedAt: new Date().toISOString(), score, total, details };
+            const dl = document.createElement('button'); dl.textContent = 'Baixar resultado (JSON)'; dl.style.marginTop = '12px'; dl.addEventListener('click', () => { const blob = new Blob([JSON.stringify(lastResult, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'resultado_quiz_leticia.json'; a.click(); URL.revokeObjectURL(url); }); resultArea.appendChild(dl);
+
+            const dlImg = document.createElement('button'); dlImg.textContent = 'Baixar resultado (PNG)'; dlImg.style.marginTop = '12px'; dlImg.style.marginLeft = '8px'; dlImg.addEventListener('click', () => {
+                generateResultImageBlob(lastResult, (blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a'); a.href = url; a.download = 'resultado_quiz_leticia.png'; a.click(); URL.revokeObjectURL(url);
+                });
+            }); resultArea.appendChild(dlImg);
         }
 
         // Inicializa
