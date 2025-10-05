@@ -146,60 +146,85 @@
             }
 
             body {
-                margin: 12px;
+                margin: 6px;
             }
 
             .card {
-                margin: 12px;
-                padding: 16px;
+                margin: 6px;
+                padding: 10px;
                 border-radius: 12px;
-                max-width: calc(100% - 24px);
+                max-width: calc(100% - 12px);
             }
 
             h1 {
-                font-size: 1.25rem;
+                font-size: 1.6rem;
+            }
+
+            /* questões maiores e opções fáceis de tocar */
+            .question strong {
+                font-size: 24px;
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .question {
+                margin-top: 10px;
             }
 
             .option {
-                padding: 12px 10px;
-                gap: 12px;
-                font-size: 15px;
-                flex-wrap: wrap;
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                padding: 20px 16px;
+                border-radius: 16px;
+                font-size: 24px;
+                /* maior para leitura */
+                line-height: 1.35;
+                touch-action: manipulation;
             }
 
             .option span {
                 display: block;
+                font-size: 24px;
             }
 
             .option input[type="radio"] {
-                margin-left: 2px;
-                margin-top: 4px;
+                margin-left: 8px;
+                margin-top: 0;
+                transform: scale(2.2);
+            }
+
+            .option input[type="radio"]:active {
+                transform: scale(2.3);
             }
 
             .controls {
                 flex-direction: column;
-                gap: 10px;
+                gap: 12px;
             }
 
             .controls button {
                 width: 100%;
-                padding: 12px;
-                font-size: 16px;
+                padding: 18px;
+                font-size: 20px;
             }
 
             #submit {
                 margin-left: 0 !important;
             }
 
-            .question {
-                margin-top: 12px;
-            }
-
             p.hint {
-                font-size: 14px;
+                font-size: 17px;
             }
 
             .result {
+                padding: 18px;
+                font-size: 18px;
+            }
+
+            .result .correct,
+            .result .incorrect {
+                font-size: 18px;
                 padding: 12px;
             }
 
